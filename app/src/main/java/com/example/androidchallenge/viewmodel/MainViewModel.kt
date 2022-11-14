@@ -2,40 +2,64 @@ package com.example.androidchallenge.viewmodel
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.androidchallenge.Constants
 import com.example.androidchallenge.model.TeamEntity
+import com.example.androidchallenge.model.UserEntity
 import com.example.androidchallenge.repository.TeamRepository
 import com.example.androidchallenge.repository.UserRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class MainViewModel @Inject constructor(
     val userRepository: UserRepository,
     val teamRepository: TeamRepository,
     val dataStore: DataStore<Preferences>
     ) : ViewModel() {
 
-    private val _uiStateMain: MutableStateFlow<MainUiState> = MutableStateFlow(
-        MainUiState.Empty
-    )
-    val uiStateMain: StateFlow<MainUiState> get() = _uiStateMain
+    private val _user = MutableLiveData<UserEntity>()
+    val user: LiveData<UserEntity>
+        get() = _user
+
+    private val _teams = MutableLiveData<List<TeamEntity>>()
+    val teams: LiveData<List<TeamEntity>>
+        get() = _teams
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
+
+    private val _error = MutableLiveData<Exception>()
+    val error: LiveData<Exception>
+        get() = _error
 
     init {
         viewModelScope.launch {
-            val response = teamRepository.getTeams()
-            if (response.isSuccessful && response.body() != null) _uiStateMain.emit(MainUiState.Success(response.body()!!))
+            _isLoading.postValue(true)
+
+            try {
+                val response = userRepository.getUsers(stringPreferencesKey(Constants.TOKEN_KEY).name)
+                if (response.isSuccessful && response.body() != null)
+                    _user.postValue(response.body())
+            } catch (e: Exception){
+                _error.postValue(e)
+            }
+
+            try {
+                val response = teamRepository.getTeams()
+                if (response.isSuccessful && response.body() != null)
+                    _teams.postValue(response.body())
+            } catch (e: Exception){
+                _error.postValue(e)
+            }
         }
 
-    }
-
-    sealed class MainUiState {
-        object Empty : MainUiState()
-        object Loading : MainUiState()
-        object Error: MainUiState()
-        data class Success(val teams: List<TeamEntity>) : MainUiState()
     }
 
 

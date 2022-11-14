@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.androidchallenge.R
 import com.example.androidchallenge.databinding.FragmentLoginBinding
@@ -27,23 +26,29 @@ class LoginFragment : Fragment() {
         viewModel = this@LoginFragment.viewModel
     }.root
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObservers()
+    }
 
-        when (viewModel.uiStateAuth.value){
-            is LoginViewModel.AuthenticationUiState.Empty -> {}
-            is LoginViewModel.AuthenticationUiState.Loading -> {
+    private fun setObservers(){
+        viewModel.success.observe(viewLifecycleOwner) { success ->
+            if (success)
+                findNavController().navigate(R.id.mainFragment)
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading){
                 binding.llLoginScreen.visibility = View.GONE
                 binding.progressBarLogin.visibility = View.VISIBLE
             }
-            is LoginViewModel.AuthenticationUiState.Error -> {
-
-            }
-            is LoginViewModel.AuthenticationUiState.Success -> {
-                findNavController().navigate(R.id.mainFragment)
-            }
         }
 
+        viewModel.error.observe(viewLifecycleOwner) { error ->
+        }
+
+        viewModel.errorBody.observe(viewLifecycleOwner) { errorBody ->
+        }
     }
 
 }
