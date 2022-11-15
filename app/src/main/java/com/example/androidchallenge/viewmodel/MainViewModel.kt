@@ -1,7 +1,5 @@
 package com.example.androidchallenge.viewmodel
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,9 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    val userRepository: UserRepository,
-    val teamRepository: TeamRepository,
-    val dataStore: DataStore<Preferences>
+    private val userRepository: UserRepository,
+    private val teamRepository: TeamRepository
     ) : ViewModel() {
 
     private val _user = MutableLiveData<UserEntity>()
@@ -42,19 +39,22 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _isLoading.postValue(true)
-
             try {
                 val response = userRepository.getUsers(stringPreferencesKey(Constants.TOKEN_KEY).name)
-                if (response.isSuccessful && response.body() != null)
+                if (response.isSuccessful && response.body() != null) {
                     _user.postValue(response.body())
+                    _isLoading.postValue(false)
+                }
             } catch (e: Exception){
                 _error.postValue(e)
             }
 
             try {
                 val response = teamRepository.getTeams()
-                if (response.isSuccessful && response.body() != null)
+                if (response.isSuccessful && response.body() != null) {
                     _teams.postValue(response.body())
+                    _isLoading.postValue(false)
+                }
             } catch (e: Exception){
                 _error.postValue(e)
             }

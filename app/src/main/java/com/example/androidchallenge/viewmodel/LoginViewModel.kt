@@ -15,6 +15,10 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val repository: AuthenticationRepository) : ViewModel() {
 
+    val userName = MutableLiveData<String>()
+
+    val password = MutableLiveData<String>()
+
     private val _success = MutableLiveData<Boolean>()
     val success: LiveData<Boolean>
         get() = _success
@@ -32,10 +36,10 @@ class LoginViewModel @Inject constructor(private val repository: AuthenticationR
     val errorBody: LiveData<ResponseBody?>
         get() = _errorBody
 
-    fun authenticate(userName: String, password: String) = viewModelScope.launch {
+    fun authenticate() = viewModelScope.launch {
         _isLoading.postValue(true)
         try {
-            val response = repository.authenticate(userName, password)
+            val response = repository.authenticate(userName.value!!, password.value!!)
             if (response.isSuccessful)
                 _success.postValue(true)
             else {

@@ -1,16 +1,18 @@
 package com.example.androidchallenge.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.androidchallenge.R
 import com.example.androidchallenge.databinding.FragmentLoginBinding
 import com.example.androidchallenge.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -28,6 +30,7 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         setObservers()
     }
 
@@ -36,17 +39,14 @@ class LoginFragment : Fragment() {
             if (success)
                 findNavController().navigate(R.id.mainFragment)
         }
-
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading){
                 binding.llLoginScreen.visibility = View.GONE
                 binding.progressBarLogin.visibility = View.VISIBLE
             }
         }
-
         viewModel.error.observe(viewLifecycleOwner) { error ->
         }
-
         viewModel.errorBody.observe(viewLifecycleOwner) { errorBody ->
         }
     }

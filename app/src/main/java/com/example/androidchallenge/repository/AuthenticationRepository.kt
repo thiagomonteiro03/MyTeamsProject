@@ -8,7 +8,7 @@ import com.example.androidchallenge.Constants
 import com.example.androidchallenge.remote.retrofit.TokenResponse
 import com.example.androidchallenge.remote.AuthenticationService
 import com.example.androidchallenge.remote.retrofit.LoginRequest
-import com.example.androidchallenge.util.md5
+import com.example.androidchallenge.extension.md5
 import retrofit2.Response
 import javax.inject.Inject
 

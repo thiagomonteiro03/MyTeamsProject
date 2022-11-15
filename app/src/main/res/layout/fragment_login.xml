@@ -28,7 +28,7 @@
                 android:id="@+id/imageLogin"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/ic_login_icon" />
+                android:src="@drawable/ic_login" />
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -36,26 +36,36 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="42dp"
-                android:background="@color/black">
+                android:background="@color/black"
+                app:startIconDrawable="@drawable/ic_person">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/usernameText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/background" />
+                    android:text="@={viewModel.userName}"
+                    android:hint="@string/email"
+                    android:background="@color/background"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayoutPassword"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="42dp">
+                android:layout_margin="42dp"
+                app:passwordToggleEnabled="true"
+                app:startIconDrawable="@drawable/ic_key">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/passwordText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/background" />
+                    android:text="@={viewModel.password}"
+                    android:hint="@string/password"
+                    android:background="@color/background"
+                    android:inputType="textPassword"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
@@ -63,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="24dp"
-                android:onClick='@{() -> viewModel.authenticate("lala", "123")}'
+                android:onClick='@{() -> viewModel.authenticate()}'
                 android:text="@string/login" />
 
         </LinearLayout>

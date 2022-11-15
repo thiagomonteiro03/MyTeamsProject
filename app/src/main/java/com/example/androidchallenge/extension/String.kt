@@ -1,4 +1,4 @@
-package com.example.androidchallenge.util
+package com.example.androidchallenge.extension
 
 import java.security.MessageDigest
 
