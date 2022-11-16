@@ -19,4 +19,7 @@
     <string name="unexpected_error">"Erro inexperado: "</string>
     <string name="email">Digite seu e-mail</string>
     <string name="password">Digite sua senha</string>
+    <string name="api_error">Ocorreu um erro:</string>
+    <string name="user_required">O Campo de Usuário é Obrigatório</string>
+    <string name="password_required">A Senha é Obrigatória</string>
 </resources>

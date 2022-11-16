@@ -4,10 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.androidchallenge.R
 import com.example.androidchallenge.repository.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import javax.inject.Inject
@@ -18,6 +17,32 @@ class LoginViewModel @Inject constructor(private val repository: AuthenticationR
     val userName = MutableLiveData<String>()
 
     val password = MutableLiveData<String>()
+
+    private val isUserNameValid: Boolean
+        get() {
+            val isNotEmpty = userName.value?.isNotEmpty() ?: false
+            if (!isNotEmpty) postUserNameEmptyError()
+            return isNotEmpty
+        }
+
+    private val isPasswordValid: Boolean
+        get() {
+            val isNotEmpty = password.value?.isNotEmpty() ?: false
+            if (!isNotEmpty) postPasswordEmptyError()
+            return isNotEmpty
+        }
+
+    private val isFieldsValid: Boolean
+        get() = isUserNameValid.and(isPasswordValid)
+
+    private val _userNameErrorMessageResId = MutableLiveData<Int>()
+    val userNameErrorMessageResId: LiveData<Int>
+        get() = _userNameErrorMessageResId
+
+    private val _passwordErrorMessageResId = MutableLiveData<Int>()
+    val passwordErrorMessageResId: LiveData<Int>
+        get() = _passwordErrorMessageResId
+
 
     private val _success = MutableLiveData<Boolean>()
     val success: LiveData<Boolean>
@@ -37,19 +62,30 @@ class LoginViewModel @Inject constructor(private val repository: AuthenticationR
         get() = _errorBody
 
     fun authenticate() = viewModelScope.launch {
-        _isLoading.postValue(true)
-        try {
-            val response = repository.authenticate(userName.value!!, password.value!!)
-            if (response.isSuccessful)
-                _success.postValue(true)
-            else {
-                if (response.errorBody() != null) {
-                    _errorBody.postValue(response.errorBody())
+        if (isFieldsValid) {
+            _isLoading.postValue(true)
+            try {
+                val response = repository.authenticate(userName.value!!, password.value!!)
+                if (response.isSuccessful)
+                    _success.postValue(true)
+                else {
+                    if (response.errorBody() != null) {
+                        _errorBody.postValue(response.errorBody())
+                    }
                 }
+            } catch (e: Exception) {
+                _error.postValue(e)
             }
-        } catch (e: Exception){
-             _error.postValue(e)
         }
+    }
+
+    private fun postUserNameEmptyError() {
+        _userNameErrorMessageResId.postValue(R.string.user_required)
+    }
+
+
+    private fun postPasswordEmptyError() {
+        _passwordErrorMessageResId.postValue(R.string.password_required)
     }
 
 }

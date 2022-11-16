@@ -2,7 +2,6 @@ package com.example.androidchallenge
 
 object Constants {
 
-    const val PREF_KEY = "token"
     const val TOKEN_KEY = "token"
     const val CLIENT_ID_KEY = "clientId"
     const val CLIENT_SECRET_KEY = "clientSecret"

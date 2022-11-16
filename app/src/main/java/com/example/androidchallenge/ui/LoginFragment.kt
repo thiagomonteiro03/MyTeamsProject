@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.androidchallenge.R
 import com.example.androidchallenge.databinding.FragmentLoginBinding
 import com.example.androidchallenge.viewmodel.LoginViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -46,8 +47,19 @@ class LoginFragment : Fragment() {
             }
         }
         viewModel.error.observe(viewLifecycleOwner) { error ->
+            Snackbar.make(binding.llLogin,
+                getString(R.string.unexpected_error) + error.message.toString(), Snackbar.LENGTH_SHORT).show()
         }
         viewModel.errorBody.observe(viewLifecycleOwner) { errorBody ->
+            Snackbar.make(binding.llLogin,
+                getString(R.string.api_error) + errorBody?.string(), Snackbar.LENGTH_SHORT).show()
+        }
+
+        viewModel.userNameErrorMessageResId.observe(viewLifecycleOwner) {
+            binding.textInputLayoutUser.error = getString(it)
+        }
+        viewModel.passwordErrorMessageResId.observe(viewLifecycleOwner) {
+            binding.textInputLayoutPassword.error = getString(it)
         }
     }
 

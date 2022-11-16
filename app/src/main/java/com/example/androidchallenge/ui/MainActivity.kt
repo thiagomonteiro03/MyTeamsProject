@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout = findViewById(R.id.drawerLayout)
 
-        supportActionBar?.apply{
+        supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             title = ""
             setHomeAsUpIndicator(R.drawable.ic_menu)
@@ -42,12 +42,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            if(drawerLayout.isOpen){
-                drawerLayout.closeDrawer(GravityCompat.START)
-            }else {
-                drawerLayout.openDrawer(GravityCompat.START)
-            }
-            return true
+        if (drawerLayout.isOpen) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+        return true
     }
 
 }

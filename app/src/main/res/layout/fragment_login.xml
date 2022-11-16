@@ -10,6 +10,7 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/llLogin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
@@ -36,7 +37,6 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="42dp"
-                android:background="@color/black"
                 app:startIconDrawable="@drawable/ic_person">
 
                 <com.google.android.material.textfield.TextInputEditText
